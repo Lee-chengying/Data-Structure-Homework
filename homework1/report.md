@@ -2,32 +2,31 @@
 
 - 姓名：李承穎
 - 學號：41443114
-- 科系:資工二甲
+- 科系：資工二甲
 
-1. 解題說明
+---
 
-問題描述:
+## 1. 解題說明
+
+### 問題描述
 這次作業要解兩題經典的題目：
-1. Problem 1 (Ackermann's Function)：寫阿克曼函式 A(m, n)，這函式數字大，很容易把記憶體吃爆。題目要求我們同時寫出「遞迴版」跟「非遞迴版」
-2. Problem 2 (Powerset of a Set)：給一個有 n 個元素的集合 S，用遞迴把所有可能的子集合全部找出來印出來
+1. **Problem 1 (Ackermann's Function)**：寫阿克曼函式 A(m, n)，這函式數字大，很容易把記憶體吃爆。題目要求我們同時寫出「遞迴版」跟「非遞迴版」。
+2. **Problem 2 (Powerset of a Set)**：給一個有 n 個元素的集合 S，用遞迴把所有可能的子集合全部找出來印出來。
 
-解題策略:
-Problem 1：
-  遞迴版：直接對著題目給的數學條件寫 if-else
-  遇到 m=0 就回傳 n+1； 
-  n=0 就呼叫 A(m-1, 1)；
-  最麻煩的，要先讓內層的 A(m, n-1) 算完，再把結果整包丟給外層的 A(m-1, \dots)
-  
-  非遞迴版： <stack> 不能拿來用，所以我自己開了一個大陣列 capoo_box 當作陽春的 stack，再用一個 top變數來記錄位置做 push 跟 pop
-Problem 2：
-  用二元樹「選或不選」的想法。走過集合裡的每個字元時，都分成兩條路
-  遞迴往下走到最後一個元素時，就代表湊好一組子集合了，直接格式化印出來。
+### 解題策略
+* **Problem 1**：
+  * **遞迴版**：直接對著題目給的數學條件寫 if-else。遇到 m=0 就回傳 n+1；n=0 就呼叫 A(m-1, 1)；最麻煩的，要先讓內層的 A(m, n-1) 算完，再把結果整包丟給外層的 A(m-1, ...)
+  * **非遞迴版**：`<stack>` 不能拿來用，所以我自己開了一個大陣列 capoo_box 當作陽春的 stack，再用一個 top 變數來記錄位置做 push 跟 pop。
+* **Problem 2**：
+  * 用二元樹「選或不選」的想法。走過集合裡的每個字元時，都分成兩條路。
+  * 遞迴往下走到最後一個元素時，就代表湊好一組子集合了，直接格式化印出來。
 
+---
 
-2. 程式實作
+## 2. 程式實作
 
-Problem 1 (src/problem1.cpp)
-cpp
+### Problem 1 (`src/problem1.cpp`)
+```cpp
 #include <iostream>
 
 using namespace std;
@@ -106,10 +105,10 @@ int main() {
 
     return 0;
 }
+```
 
-
-Problem 2 (src/problem2.cpp)
-cpp
+### Problem 2 (`src/problem2.cpp`)
+```cpp
 #include <iostream>
 #include <string>
 
@@ -161,45 +160,45 @@ int main() {
 
     return 0;
 }
+```
 
+---
 
+## 3. 效能分析
 
+### Problem 1: Ackermann 函式
+* **時間複雜度**：
+  * Ackermann 函式的成長速度快得嚇人，沒辦法寫成一般的多項式。
+  * $m = 1$ 的時候，$A(1, n) = n + 2$，時間是 $O(n)$。
+  * $m = 2$ 的時候，$A(2, n) = 2n + 3$，時間也是 $O(n)$。
+  * 但到了 $m = 3$，$A(3, n) = 2^{n+3} - 3$，時間直接飆到 $O(2^n)$。
+  * 整體的時間複雜度會直接跟著算出來的數值等比暴增，通常表示為 $O(A(m, n))$。
+* **空間複雜度**：
+  * **遞迴版本**：呼叫深度主要看 Call Stack 疊了多深，空間複雜度是 $O(A(m, n))$。
+  * **非遞迴版本**：我自己開了 `capoo_box` 陣列當作堆疊，裡面最多同時放的元素量也是 $O(A(m, n))$。
 
-3. 效能分析
+### Problem 2: Powerset 冪集
+* **時間複雜度**：
+  * 每個元素都有「挑」跟「不挑」兩種選擇，整棵遞迴樹展開底部會有 $2^n$ 個組合。
+  * 每次到底部印出字串時要花大約 $O(n)$ 的時間拼裝與輸出。
+  * 所以總時間複雜度大約是 $O(n \times 2^n)$。
+* **空間複雜度**：
+  * 遞迴最大的深度剛好就是集合元素的個數 $n$。
+  * 每一層只保存當前挑選字串的狀態，空間複雜度就是 $O(n)$。
 
-Problem 1: Ackermann 函式
-時間複雜度
-  Ackermann 函式的成長速度快得嚇人，沒辦法寫成一般的多項式
-  m = 1 的時候，A(1, n) = n + 2，時間是 O(n)
-  m = 2 的時候，A(2, n) = 2n + 3，時間也是 O(n)
-  但到了 m = 3，A(3, n) = 2^{n+3} - 3，時間直接飆到 O(2^n)
-整體的時間複雜度會直接跟著算出來的數值等比暴增，通常表示為 O(A(m, n))
-  空間複雜度：
-  遞迴版本：呼叫深度主要看 Call Stack 疊了多深，空間複雜度是 O(A(m, n))
-  非遞迴版本：我自己開了 capoo_box 陣列當作堆疊，裡面最多同時放的元素量也是 O(A(m, n))
+---
 
-Problem 2: Powerset 冪集
-時間複雜度：
-   每個元素都有「挑」跟「不挑」兩種選擇，整棵遞迴樹展開底部會有 2^n 個組合
-   每次到底部印出字串時要花大約 O(n) 的時間拼裝與輸出
-   所以總時間複雜度大約是 O(n \times 2^n)
-空間複雜度：
-  遞迴最大的深度剛好就是集合元素的個數 n
-  每一層只保存當前挑選字串的狀態，空間複雜度就是 O(n)
+## 4. 測試與驗證
 
+### 測試環境
+- 編譯器：g++ (GCC)
+- 終端機環境：Shell / PowerShell
 
-
-4. 測試與驗證
-
- 測試環境
-  編譯器：g++ (GCC)
-  終端機環境：Shell / PowerShell
-
- Problem 1 執行結果
-  shell
-   g++ homework1/src/problem1.cpp -o homework1/src/problem1.exe
-   ./homework1/src/problem1.exe
-   Problem 1 Ackermann Test 
+### Problem 1 執行結果
+```shell
+$ g++ homework1/src/problem1.cpp -o homework1/src/problem1.exe
+$ ./homework1/src/problem1.exe
+=== Problem 1 Ackermann Test ===
 A(0, 0):
   rec : 1
   iter: 1
@@ -215,23 +214,23 @@ A(3, 2):
 A(3, 3):
   rec : 61
   iter: 61
+```
 
-
- Problem 2 執行結果
- shell
-   g++ homework1/src/problem2.cpp -o homework1/src/problem2.exe
-  ./homework1/src/problem2.exe
-  Problem 2 Powerset Test 
+### Problem 2 執行結果
+```shell
+$ g++ homework1/src/problem2.cpp -o homework1/src/problem2.exe
+$ ./homework1/src/problem2.exe
+=== Problem 2 Powerset Test ===
 Input set: {a, b, c}
 powerset (S) = {(), (c), (b), (b,c), (a), (a,c), (a,b), (a,b,c)}
+```
 
+---
 
+## 5. 申論及開發報告
 
+寫第一題 Ackermann 的時候，遞迴版基本上只要照著題目定義寫就很順。但非遞迴版就比較麻煩，因為這學期規定不能直接 include `<stack>`，不能偷懶用現成的容器。
 
-5. 申論及開發報告
+所以我直接開了一個全域陣列 `capoo_box` 來當作自己的 stack 用。寫非遞迴最燒腦的地方在於 $A(m - 1, A(m, n - 1))$：外層的 $m - 1$ 一定要等內層的結果出來才能算，所以不能急著算它，得先把 $m - 1$ 丟進 stack 裡面放著，接著把 $m$ 壓進去，然後把 $n$ 減 1 讓迴圈先去跑內層。手刻一個 stack 來跑迴圈之後，感覺對底層遞迴在記憶體裡推疊的運作方式清楚很多。
 
-寫第一題 Ackermann 的時候，遞迴版基本上只要照著題目定義寫就很順。但非遞迴版就比較麻煩，因為這學期規定不能直接 include <stack>，不能偷懶用現成的容器
-
-所以我直接開了一個全域陣列 capoo_box 來當作自己的 stack 用。寫非遞迴最燒腦的地方在於 A(m - 1, A(m, n - 1))：外層的 m - 1 一定要等內層的結果出來才能算，所以不能急著算它，得先把 m - 1 丟進 stack 裡面放著，接著把 m壓進去，然後把 n 減 1 讓迴圈先去跑內層。手刻一個 stack 來跑迴圈之後，感覺對底層遞迴在記憶體裡推疊的運作方式清楚很多。
-
-第二題 Powerset 就單純不少，本質上就是二元樹，我都分成「不加進去」跟「加進去」兩種遞迴分支。靠著 DFS 的特性，走到底剛好就可以印出一種組合，不用開一堆額外的陣列來存答案，寫起來乾淨很多
+第二題 Powerset 就單純不少，本質上就是二元樹，我都分成「不加進去」跟「加進去」兩種遞迴分支。靠著 DFS 的特性，走到底剛好就可以印出一種組合，不用開一堆額外的陣列來存答案，寫起來乾淨很多。
