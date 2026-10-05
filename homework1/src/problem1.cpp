@@ -3,7 +3,7 @@
 using namespace std;
 
 // 第1題：Ackermann 函式
-// 照題目寫的遞迴，簡寫為 ack
+// 照題目寫的遞迴
 int ack(int m, int n) {
     if (m == 0) {
         return n + 1;
@@ -15,7 +15,7 @@ int ack(int m, int n) {
     return ack(m - 1, ack(m, n - 1));
 }
 
-// 手刻 stack，不能用 <stack> 只能用 array
+// 不能用 <stack> 只能用 array
 int box[1500000];
 int top = -1;
 
