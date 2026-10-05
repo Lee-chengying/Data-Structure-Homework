@@ -32,7 +32,7 @@
 using namespace std;
 
 // 第1題：Ackermann 函式
-// 照題目寫的遞迴，簡寫為 ack
+// 照題目寫的遞迴
 int ack(int m, int n) {
     if (m == 0) {
         return n + 1;
