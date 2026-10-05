@@ -15,7 +15,7 @@
 ### 解題策略
 * **Problem 1**：
   * **遞迴版**：直接對著題目給的數學條件寫 if-else。遇到 m=0 就回傳 n+1；n=0 就呼叫 A(m-1, 1)；最麻煩的，要先讓內層的 A(m, n-1) 算完，再把結果整包丟給外層的 A(m-1, ...)。
-  * **非遞迴版**：`<stack>` 不能拿來用，所以我自己開了一個大陣列 box 當作陽春的 stack，再用一個 top 變數來記錄位置做 push 跟 pop。
+  * **非遞迴版**：`<stack>` 不能拿來用，所以我自己開了一個大陣列 box 當作陽春的 stack，再用一個 top 變數來記錄位置做 push 跟 pop，直接以 `while (top >= 0)` 控制堆疊循環。
   * **測試方式**：不用宣告陣列傳來傳去，寫一個 `run_test(m, n)` 函式直接傳值呼叫測試。
 * **Problem 2**：
   * 用二元樹「選或不選」的想法。走過集合裡的每個字元時，都分成兩條路。
@@ -48,48 +48,44 @@ int ack(int m, int n) {
 int box[1500000];
 int top = -1;
 
-void push(int x) {
+void push_val(int x) {
     top++;
     box[top] = x;
 }
 
-int pop() {
+int pop_val() {
     int val = box[top];
     top--;
     return val;
 }
 
-bool is_empty() {
-    return top == -1;
-}
-
 // 非遞迴版
 int ack_iter(int m, int n) {
     top = -1; // 每次跑重設 index
-    push(m);
+    push_val(m);
 
-    while (!is_empty()) {
-        m = pop();
+    while (top >= 0) {
+        m = pop_val();
 
         if (m == 0) {
             // 算到底加一
             n = n + 1;
         } else if (n == 0) {
             // A(m - 1, 1)
-            push(m - 1);
+            push_val(m - 1);
             n = 1;
         } else {
             // A(m - 1, A(m, n - 1))
             // 把外層的 m - 1 壓進去等，再把 m 壓進去算內層
-            push(m - 1);
-            push(m);
+            push_val(m - 1);
+            push_val(m);
             n = n - 1;
         }
     }
     return n;
 }
 
-// 輔助函式：直接傳 m 和 n 跑測試印結果，不用宣告陣列傳送
+// 輔助函式：直接傳 m, n 跑測試，不用開陣列傳來傳去
 void run_test(int m, int n) {
     cout << "A(" << m << ", " << n << "):" << endl;
     cout << "  rec : " << ack(m, n) << endl;
@@ -98,7 +94,8 @@ void run_test(int m, int n) {
 
 int main() {
     cout << "=== Problem 1 Ackermann Test ===" << endl;
-    // 直接呼叫測試，完全不開陣列
+
+    // 直接一組一組測，完全不用陣列
     run_test(0, 0);
     run_test(1, 2);
     run_test(2, 2);
